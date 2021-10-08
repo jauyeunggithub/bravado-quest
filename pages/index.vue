@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-card max-width="600px" elevation="0" class="mx-auto">
+    <v-card width="600px" elevation="0" class="mx-auto">
       <v-card-text :elevation="0">
         <v-text-field
           v-model="keyword"
@@ -9,9 +9,10 @@
           full-width
           solo
           dense
+          background-color="#FAFAFA"
         />
 
-        <SearchResults :keyword='keyword' />
+        <SearchResults :keyword="keyword" />
       </v-card-text>
     </v-card>
   </v-app>
@@ -23,14 +24,14 @@ import SearchResults from '@/components/SearchResults'
 
 export default {
   components: {
-    SearchResults
+    SearchResults,
   },
   data() {
     return {
       keyword: '',
       mdiMagnify,
     }
-  }
+  },
 }
 </script>
 

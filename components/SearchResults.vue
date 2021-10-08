@@ -3,7 +3,7 @@
     <v-card v-for="r of filteredSearchResults" :key="r.id" class="my-3">
       <v-card-text class="d-flex pa-0 ma-0">
         <img :src="r.avatar" class="avatar" />
-        <div class="flex-grow-1 pa-3 d-flex flex-column justify-space-between">
+        <div class="flex-grow-1 pa-3 d-flex flex-column justify-space-between right-pane">
           <div class="d-flex justify-space-between">
             <div>
               <h2>{{ r.name }}</h2>
@@ -66,7 +66,11 @@ export default {
 
 <style>
 .avatar {
-  background: lightgray;
+  background: #BDBDBD;
   width: 150px;
+}
+
+.right-pane {
+  background: #FAFAFA;
 }
 </style>
