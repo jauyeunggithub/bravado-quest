@@ -1,7 +1,27 @@
 <template>
   <div>
-    <v-card v-for="r of filteredSearchResults" :key="r.id">
-      <v-card-text class="d-flex justify-space-between"> </v-card-text>
+    <v-card v-for="r of filteredSearchResults" :key="r.id" class="my-3">
+      <v-card-text class="d-flex pa-0 ma-0">
+        <img :src="r.avatar" class="avatar" />
+        <div class="flex-grow-1 pa-3 d-flex flex-column justify-space-between">
+          <div class="d-flex justify-space-between">
+            <div>
+              <h2>{{ r.name }}</h2>
+              <p class="py-0 my-0">
+                <b>{{ r.title }}</b>
+              </p>
+              <p class="py-0 my-0">{{ r.address }}</p>
+            </div>
+            <div>
+              {{ r.email }}
+            </div>
+          </div>
+
+          <div>
+            <v-btn text>Mark as Suitable</v-btn>
+          </div>
+        </div>
+      </v-card-text>
     </v-card>
   </div>
 </template>
@@ -24,9 +44,8 @@ export default {
   },
   computed: {
     filteredSearchResults() {
-      console.log( this.usersWithId[0])
       const { keyword } = this
-      if (!keyword){
+      if (!keyword) {
         return this.usersWithId
       }
       return this.usersWithId.filter((u) => {
@@ -44,3 +63,9 @@ export default {
   },
 }
 </script>
+
+<style>
+.avatar {
+  width: 150px;
+}
+</style>
