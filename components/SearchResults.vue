@@ -18,7 +18,7 @@
           </div>
 
           <div>
-            <v-btn text>Mark as Suitable</v-btn>
+            <v-btn text color="#00897B">Mark as Suitable</v-btn>
           </div>
         </div>
       </v-card-text>
@@ -66,6 +66,7 @@ export default {
 
 <style>
 .avatar {
+  background: lightgray;
   width: 150px;
 }
 </style>
