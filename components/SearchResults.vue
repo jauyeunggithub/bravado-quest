@@ -1,20 +1,24 @@
 <template>
   <div>
-    <v-card v-for="r of filteredSearchResults" :key="r.id" class="my-3">
+    <v-card
+      v-for="r of filteredSearchResultsWithHighlight"
+      :key="r.id"
+      class="my-3"
+    >
       <v-card-text class="d-flex pa-0 ma-0">
         <img :src="r.avatar" class="avatar" />
-        <div class="flex-grow-1 pa-3 d-flex flex-column justify-space-between right-pane">
+        <div
+          class="flex-grow-1 pa-3 d-flex flex-column justify-space-between right-pane"
+        >
           <div class="d-flex justify-space-between">
             <div>
-              <h2>{{ r.name }}</h2>
+              <h2 v-html="r.name"></h2>
               <p class="py-0 my-0">
-                <b>{{ r.title }}</b>
+                <b v-html="r.title"></b>
               </p>
-              <p class="py-0 my-0">{{ r.address }}</p>
+              <p class="py-0 my-0" v-html="r.address"></p>
             </div>
-            <div>
-              {{ r.email }}
-            </div>
+            <div v-html="r.email"></div>
           </div>
 
           <div>
@@ -60,17 +64,38 @@ export default {
         )
       })
     },
+    filteredSearchResultsWithHighlight() {
+      const { keyword } = this
+      const highlighted = this.filteredSearchResults.map((u) => {
+        const highlightedEntries = Object.entries(u).map(([key, val]) => {
+          if (key === 'avatar' || key === 'id') {
+            return [key, val]
+          }
+          const highlightedVal = val.replace(
+            new RegExp(keyword, 'gi'),
+            (match) => `<mark>${match}</mark>`
+          )
+          return [key, highlightedVal]
+        })
+        return Object.fromEntries(highlightedEntries)
+      })
+      return highlighted
+    },
   },
 }
 </script>
 
 <style>
 .avatar {
-  background: #BDBDBD;
+  background: #bdbdbd;
   width: 150px;
 }
 
 .right-pane {
-  background: #FAFAFA;
+  background: #fafafa;
+}
+
+mark {
+  background: yellow;
 }
 </style>
