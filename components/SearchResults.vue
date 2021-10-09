@@ -50,35 +50,21 @@ export default {
   data() {
     return {
       highlightStatus: {},
-      usersWithId: [],
+      filteredSearchResults: [],
     }
   },
   computed: {
-    filteredSearchResults() {
-      const { keyword } = this
-      if (!keyword) {
-        return this.usersWithId
-      }
-      return this.usersWithId.filter((u) => {
-        const { address, avatar, city, email, name, title } = u
-        return (
-          address.toLowerCase().includes(keyword.toLowerCase()) ||
-          avatar.toLowerCase().includes(keyword.toLowerCase()) ||
-          city.toLowerCase().includes(keyword.toLowerCase()) ||
-          email.toLowerCase().includes(keyword.toLowerCase()) ||
-          name.toLowerCase().includes(keyword.toLowerCase()) ||
-          title.toLowerCase().includes(keyword.toLowerCase())
-        )
-      })
-    },
     filteredSearchResultsWithHighlight() {
       const { keyword } = this
-      const highlighted = this.filteredSearchResults.map((u) => {
-        const highlightedEntries = Object.entries(u).map(([key, val]) => {
+      if (!Array.isArray(this.filteredSearchResults)) {
+        return []
+      }
+      const highlighted = this.filteredSearchResults?.map((u) => {
+        const highlightedEntries = Object.entries(u)?.map(([key, val]) => {
           if (key === 'avatar' || key === 'id') {
             return [key, val]
           }
-          const highlightedVal = val.replace(
+          const highlightedVal = val?.replace(
             new RegExp(keyword, 'gi'),
             (match) => `<mark>${match}</mark>`
           )
@@ -88,16 +74,48 @@ export default {
       })
       return highlighted
     },
-
+  },
+  watch: {
+    keyword() {
+      this.search()
+    },
   },
   beforeMount() {
     this.loadData()
   },
   methods: {
+    async search() {
+      const { keyword } = this
+      if (keyword) {
+        const filteredSearchResults = await db.avatars
+          .filter((u) => {
+            const { address, avatar, city, email, name, title } = u
+            return (
+              address?.toLowerCase()?.includes(keyword?.toLowerCase()) ||
+              avatar?.toLowerCase()?.includes(keyword?.toLowerCase()) ||
+              city?.toLowerCase()?.includes(keyword?.toLowerCase()) ||
+              email?.toLowerCase()?.includes(keyword?.toLowerCase()) ||
+              name?.toLowerCase()?.includes(keyword?.toLowerCase()) ||
+              title?.toLowerCase()?.includes(keyword?.toLowerCase())
+            )
+          })
+          .limit(10)
+          .toArray()
+        this.filteredSearchResults = filteredSearchResults
+      } else {
+        this.filteredSearchResults = await db.avatars
+          ?.toCollection()
+          ?.limit(10)
+          .toArray()
+      }
+    },
     loadData() {
       const worker = this.$worker.createWorker()
       worker.onmessage = async () => {
-        this.usersWithId = await db.avatars.toCollection().toArray()
+        this.filteredSearchResults = await db.avatars
+          ?.toCollection()
+          ?.limit(10)
+          .toArray()
       }
       worker.postMessage('load')
     },

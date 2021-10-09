@@ -4,7 +4,6 @@ onmessage = async () => {
   if ((await db.avatars.toCollection().toArray()).length > 0) {
     postMessage({
       loaded: true,
-      items: await db.avatars.toCollection().toArray(),
     })
     return
   }
@@ -14,6 +13,5 @@ onmessage = async () => {
   await db.avatars.bulkPut(usersWithId)
   postMessage({
     loaded: true,
-    items: await db.avatars.toCollection().toArray(),
   })
 }
