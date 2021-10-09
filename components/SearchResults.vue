@@ -38,6 +38,8 @@
 </template>
 
 <script>
+import db from '@/db'
+
 export default {
   props: {
     keyword: {
@@ -86,17 +88,18 @@ export default {
       })
       return highlighted
     },
+
   },
-  watch: {
-    workers([worker]) {
-      if (worker) {
-        worker.onmessage = (event) => {
-          console.log('loaded', event)
-        }
+  beforeMount() {
+    this.loadData()
+  },
+  methods: {
+    loadData() {
+      const worker = this.$worker.createWorker()
+      worker.onmessage = async () => {
+        this.usersWithId = await db.avatars.toCollection().toArray()
       }
-      if (worker) {
-        worker.postMessage('load')
-      }
+      worker.postMessage('load')
     },
   },
 }
