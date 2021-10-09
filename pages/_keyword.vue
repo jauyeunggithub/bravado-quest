@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-card width="600px" elevation="0" class="mx-auto">
-      <v-card-text :elevation="0" >
+      <v-card-text :elevation="0">
         <v-text-field
           v-model="keyword"
           hide-details
@@ -12,7 +12,7 @@
           background-color="#FAFAFA"
         />
 
-        <SearchResults :keyword="keyword"  />
+        <SearchResults :keyword="keyword" />
       </v-card-text>
     </v-card>
   </v-app>
@@ -32,12 +32,15 @@ export default {
       mdiMagnify,
     }
   },
+  beforeMount() {
+    this.keyword = this.$route.params.keyword
+  },
 }
 </script>
 
 <style>
 html {
-  overflow: hidden
+  overflow: hidden;
 }
 </style>
 
