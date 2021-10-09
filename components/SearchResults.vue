@@ -23,7 +23,10 @@
               <p class="py-0 my-0">
                 <b v-html="r.title"></b>
               </p>
-              <p class="py-0 my-0" v-html="r.address"></p>
+              <p class="py-0 my-0" >
+                <span v-html="r.address"></span>,
+                <span v-html="r.city"></span>
+              </p>
             </div>
             <div v-html="r.email"></div>
           </div>
@@ -76,8 +79,11 @@ export default {
     },
   },
   watch: {
-    keyword() {
-      this.search()
+    keyword: {
+      immediate: true,
+      handler() {
+        this.search()
+      },
     },
   },
   beforeMount() {
@@ -85,14 +91,14 @@ export default {
   },
   methods: {
     async search() {
+      await this.$nextTick()
       const { keyword } = this
       if (keyword) {
         const filteredSearchResults = await db.avatars
           .filter((u) => {
-            const { address, avatar, city, email, name, title } = u
+            const { address, city, email, name, title } = u
             return (
               address?.toLowerCase()?.includes(keyword?.toLowerCase()) ||
-              avatar?.toLowerCase()?.includes(keyword?.toLowerCase()) ||
               city?.toLowerCase()?.includes(keyword?.toLowerCase()) ||
               email?.toLowerCase()?.includes(keyword?.toLowerCase()) ||
               name?.toLowerCase()?.includes(keyword?.toLowerCase()) ||
@@ -111,11 +117,8 @@ export default {
     },
     loadData() {
       const worker = this.$worker.createWorker()
-      worker.onmessage = async () => {
-        this.filteredSearchResults = await db.avatars
-          ?.toCollection()
-          ?.limit(10)
-          .toArray()
+      worker.onmessage = () => {
+        this.search()
       }
       worker.postMessage('load')
     },
