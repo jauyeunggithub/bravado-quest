@@ -1,42 +1,49 @@
 <template>
-  <div id="scrollable" class="my-3">
-    <v-card
-      v-for="r of filteredSearchResultsWithHighlight"
-      :key="r.id"
-      class="my-3"
-      :style="{
-        border: highlightStatus[r.id] ? '2px solid lightblue' : undefined,
-      }"
-      @click="
-        highlightStatus = {}
-        $set(highlightStatus, r.id, !highlightStatus[r.id])
-      "
-    >
-      <v-card-text class="d-flex pa-0 ma-0">
-        <img :src="r.avatar" class="avatar" />
-        <div
-          class="flex-grow-1 pa-3 d-flex flex-column justify-space-between right-pane"
-        >
-          <div class="d-flex justify-space-between">
-            <div>
-              <h2 v-html="r.name"></h2>
-              <p class="py-0 my-0">
-                <b v-html="r.title"></b>
-              </p>
-              <p class="py-0 my-0" >
-                <span v-html="r.address"></span>,
-                <span v-html="r.city"></span>
-              </p>
+  <div>
+    <div v-if="loading" class="my-3">
+      <v-card>
+        <v-card-text> Loading... </v-card-text>
+      </v-card>
+    </div>
+    <div v-else id="scrollable" class="my-3">
+      <v-card
+        v-for="r of filteredSearchResultsWithHighlight"
+        :key="r.id"
+        class="my-3"
+        :style="{
+          border: highlightStatus[r.id] ? '2px solid lightblue' : undefined,
+        }"
+        @click="
+          highlightStatus = {}
+          $set(highlightStatus, r.id, !highlightStatus[r.id])
+        "
+      >
+        <v-card-text class="d-flex pa-0 ma-0">
+          <img :src="r.avatar" class="avatar" />
+          <div
+            class="flex-grow-1 pa-3 d-flex flex-column justify-space-between right-pane"
+          >
+            <div class="d-flex justify-space-between">
+              <div>
+                <h2 v-html="r.name"></h2>
+                <p class="py-0 my-0">
+                  <b v-html="r.title"></b>
+                </p>
+                <p class="py-0 my-0">
+                  <span v-html="r.address"></span>,
+                  <span v-html="r.city"></span>
+                </p>
+              </div>
+              <div v-html="r.email"></div>
             </div>
-            <div v-html="r.email"></div>
-          </div>
 
-          <div>
-            <v-btn text color="#00897B">Mark as Suitable</v-btn>
+            <div>
+              <v-btn text color="#00897B">Mark as Suitable</v-btn>
+            </div>
           </div>
-        </div>
-      </v-card-text>
-    </v-card>
+        </v-card-text>
+      </v-card>
+    </div>
   </div>
 </template>
 
@@ -54,6 +61,7 @@ export default {
     return {
       highlightStatus: {},
       filteredSearchResults: [],
+      loading: false,
     }
   },
   computed: {
@@ -116,9 +124,11 @@ export default {
       }
     },
     loadData() {
+      this.loading = true
       const worker = this.$worker.createWorker()
       worker.onmessage = () => {
         this.search()
+        this.loading = false
       }
       worker.postMessage('load')
     },
