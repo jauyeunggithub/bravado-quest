@@ -1,5 +1,5 @@
 <template>
-  <div id='scrollable' class="my-3">
+  <div id="scrollable" class="my-3">
     <v-card
       v-for="r of filteredSearchResultsWithHighlight"
       :key="r.id"
@@ -38,9 +38,6 @@
 </template>
 
 <script>
-import { v4 as uuidv4 } from 'uuid'
-import users from '@/data/users.json'
-
 export default {
   props: {
     keyword: {
@@ -50,8 +47,8 @@ export default {
   },
   data() {
     return {
-      usersWithId: users.map((u) => ({ ...u, id: uuidv4() })),
       highlightStatus: {},
+      usersWithId: [],
     }
   },
   computed: {
@@ -90,6 +87,18 @@ export default {
       return highlighted
     },
   },
+  watch: {
+    workers([worker]) {
+      if (worker) {
+        worker.onmessage = (event) => {
+          console.log('loaded', event)
+        }
+      }
+      if (worker) {
+        worker.postMessage('load')
+      }
+    },
+  },
 }
 </script>
 
@@ -109,6 +118,6 @@ mark {
 
 #scrollable {
   height: calc(100vh - 100px);
-  overflow-y: auto
+  overflow-y: auto;
 }
 </style>
