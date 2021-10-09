@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id='scrollable' class="my-3">
     <v-card
       v-for="r of filteredSearchResultsWithHighlight"
       :key="r.id"
@@ -105,5 +105,10 @@ export default {
 
 mark {
   background: yellow;
+}
+
+#scrollable {
+  height: calc(100vh - 100px);
+  overflow-y: auto
 }
 </style>
