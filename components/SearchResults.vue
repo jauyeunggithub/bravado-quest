@@ -4,6 +4,13 @@
       v-for="r of filteredSearchResultsWithHighlight"
       :key="r.id"
       class="my-3"
+      :style="{
+        border: highlightStatus[r.id] ? '2px solid lightblue' : undefined,
+      }"
+      @click="
+        highlightStatus = {}
+        $set(highlightStatus, r.id, !highlightStatus[r.id])
+      "
     >
       <v-card-text class="d-flex pa-0 ma-0">
         <img :src="r.avatar" class="avatar" />
@@ -44,6 +51,7 @@ export default {
   data() {
     return {
       usersWithId: users.map((u) => ({ ...u, id: uuidv4() })),
+      highlightStatus: {},
     }
   },
   computed: {
